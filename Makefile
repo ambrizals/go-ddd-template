@@ -15,7 +15,9 @@ migrate-up:
 	go run cmd/api/main.go --migrate-up
 
 swag-gen:
-	$(shell go env GOPATH)/bin/swag init -g cmd/api/main.go --output docs
+	export PATH=$$HOME/go/bin:$$PATH && \
+	go install github.com/swaggo/swag/cmd/swag@latest && \
+	swag init -g cmd/api/main.go --output docs
 	go run cmd/swagger-enhancer/main.go
 
 generate-sdk:

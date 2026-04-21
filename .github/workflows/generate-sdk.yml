@@ -25,6 +25,9 @@ jobs:
         with:
           go-version: '1.23'
 
+      - name: Install swag
+        run: go install github.com/swaggo/swag/cmd/swag@latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
