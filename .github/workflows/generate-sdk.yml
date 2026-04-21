@@ -9,9 +9,13 @@ on:
     branches:
       - main
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 permissions:
   contents: write
   pull-requests: write
+  packages: write
 
 jobs:
   generate-sdk:
@@ -35,21 +39,26 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: Generate swagger
         run: make swag-gen
 
       - name: Install SDK dependencies
-        run: cd sdk && npm install
+        run: cd sdk && bun install
 
       - name: Generate SDK
-        run: cd sdk && npm run convert
+        run: cd sdk && bun run convert
 
       - name: Update package.json version
         run: |
           cd sdk
-          npm version $VERSION --no-git-tag-version
+          bun version $VERSION --no-git-tag-version
 
       - name: Upload SDK artifact
         uses: actions/upload-artifact@v4
@@ -61,9 +70,17 @@ jobs:
       - name: Commit SDK changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add sdk/
           git commit -m "chore: update SDK to ${{ env.VERSION }}" || echo "No changes to commit"
 
       - name: Push changes
         run: git push
+
+      - name: Publish to GitHub Packages
+        run: |
+          cd sdk
+          bun publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
