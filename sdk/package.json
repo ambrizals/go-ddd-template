@@ -1,6 +1,6 @@
 {
   "name": "@ambrizals/go-ddd-template",
-  "version": "1.0.1c",
+  "version": "1.0.1d",
   "description": "TypeScript SDK for Go DDD Template API",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
