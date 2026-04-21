@@ -1,4 +1,4 @@
-.PHONY: run build test migrate-up migrate-down swag-gen
+.PHONY: run build test migrate-up migrate-down swag-gen generate-sdk
 
 run:
 	go run cmd/api/main.go
@@ -15,7 +15,11 @@ migrate-up:
 	go run cmd/api/main.go --migrate-up
 
 swag-gen:
-	swag init -g cmd/api/main.go --output docs
+	$(shell go env GOPATH)/bin/swag init -g cmd/api/main.go --output docs
+	go run cmd/swagger-enhancer/main.go
+
+generate-sdk:
+	cd sdk && npm install && npm run convert
 
 docker-up:
 	docker-compose up -d

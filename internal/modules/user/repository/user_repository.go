@@ -2,7 +2,8 @@ package repository
 
 import (
 	"context"
-	"github.com/user/go-ddd-template/internal/entity"
+
+	"github.com/ambrizals/go-ddd-template/internal/modules/user/entity"
 	"gorm.io/gorm"
 )
 

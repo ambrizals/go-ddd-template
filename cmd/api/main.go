@@ -5,17 +5,19 @@ import (
 	"log"
 	"os"
 
+	_ "github.com/ambrizals/go-ddd-template/docs" // Import generated docs
+	"github.com/ambrizals/go-ddd-template/internal/infrastructure/database"
+	"github.com/ambrizals/go-ddd-template/internal/infrastructure/otel"
+	"github.com/ambrizals/go-ddd-template/internal/infrastructure/redis"
+	user "github.com/ambrizals/go-ddd-template/internal/modules/user/handler/http"
+	"github.com/ambrizals/go-ddd-template/internal/shared/config"
+	"github.com/ambrizals/go-ddd-template/internal/shared/logger"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	fiberSwagger "github.com/swaggo/fiber-swagger"
-	_ "github.com/user/go-ddd-template/docs" // Import generated docs
-	"github.com/user/go-ddd-template/internal/config"
-	"github.com/user/go-ddd-template/internal/handler/user"
-	"github.com/user/go-ddd-template/internal/infrastructure/database"
-	"github.com/user/go-ddd-template/internal/infrastructure/logger"
-	"github.com/user/go-ddd-template/internal/infrastructure/otel"
-	"github.com/user/go-ddd-template/internal/infrastructure/redis"
+	scalar "github.com/yokeTH/gofiber-scalar"
 )
 
 // @title Go DDD API Template
@@ -60,6 +62,7 @@ func main() {
 	})
 
 	// Middlewares
+	app.Use(cors.New())
 	app.Use(recover.New())
 	app.Use(fiberLogger.New())
 
@@ -69,6 +72,14 @@ func main() {
 
 	// Swagger UI
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
+
+	// Scalar UI
+	app.Use(scalar.New(scalar.Config{
+		BasePath:   "/",
+		Path:       "scalar",
+		RawSpecUrl: "/swagger/doc.json",
+		Title:      "Scalar API Reference",
+	}))
 
 	// Start Server
 	port := os.Getenv("APP_PORT")

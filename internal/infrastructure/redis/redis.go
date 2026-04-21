@@ -3,8 +3,9 @@ package redis
 import (
 	"context"
 	"fmt"
+
+	"github.com/ambrizals/go-ddd-template/internal/shared/config"
 	"github.com/redis/go-redis/v9"
-	"github.com/user/go-ddd-template/internal/config"
 )
 
 var RedisClient *redis.Client

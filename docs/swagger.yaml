@@ -1,0 +1,171 @@
+paths:
+  /users/{id}:
+    put:
+      consumes:
+        - "application/json"
+      description: "Update user details by their unique ID"
+      parameters:
+        -           description: "User ID"
+          in: "path"
+          name: "id"
+          required: true
+          type: "integer"
+        -           description: "User update details"
+          in: "body"
+          name: "request"
+          required: true
+          schema:
+            $ref: "#/definitions/update_user.UpdateUserInput"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/dto.UserResponseDTO"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/dto.UserResponseDTO"
+        404:
+          schema:
+            $ref: "#/definitions/dto.UserResponseDTO"
+          description: "Not Found"
+      summary: "Update an existing user"
+      tags:
+        - "users"
+    delete:
+      summary: "Deactivate an existing user"
+      tags:
+        - "users"
+      description: "Deactivate user by their unique ID"
+      parameters:
+        -           type: "integer"
+          description: "User ID"
+          in: "path"
+          name: "id"
+          required: true
+      responses:
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/dto.DeactivateUserResponseDTO"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/dto.DeactivateUserResponseDTO"
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/dto.DeactivateUserResponseDTO"
+    get:
+      produces:
+        - "application/json"
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/dto.UserResponseDTO"
+          description: "OK"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/dto.UserResponseDTO"
+      summary: "Get a user by ID"
+      tags:
+        - "users"
+      description: "Get user details by their unique ID"
+      parameters:
+        -           description: "User ID"
+          in: "path"
+          name: "id"
+          required: true
+          type: "integer"
+  /users:
+    post:
+      responses:
+        201:
+          description: "Created"
+          schema:
+            $ref: "#/definitions/dto.UserResponseDTO"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/dto.UserResponseDTO"
+      summary: "Register a new user"
+      tags:
+        - "users"
+      consumes:
+        - "application/json"
+      description: "Create a new user account"
+      parameters:
+        -           name: "request"
+          required: true
+          schema:
+            $ref: "#/definitions/dto.RegisterRequest"
+          description: "User registration details"
+          in: "body"
+      produces:
+        - "application/json"
+swagger: "2.0"
+basePath: "/api/v1"
+definitions:
+  dto.UserResponseDTO:
+    properties:
+      created_at:
+        example: "2023-10-27T10:00:00Z"
+        type: "string"
+      email:
+        type: "string"
+      full_name:
+        type: "string"
+      id:
+        example: 1
+        type: "integer"
+    type: "object"
+  update_user.UpdateUserInput:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      full_name:
+        type: "string"
+      id:
+        type: "integer"
+      password:
+        minLength: 8
+        type: "string"
+    required:
+      - "id"
+  dto.DeactivateUserResponseDTO:
+    properties:
+      id:
+        example: 1
+        type: "integer"
+      deactivated:
+        example: true
+        type: "boolean"
+    type: "object"
+  dto.RegisterRequest:
+    properties:
+      email:
+        example: "user@example.com"
+        type: "string"
+      full_name:
+        example: "John Doe"
+        type: "string"
+      password:
+        minLength: 6
+        type: "string"
+        example: "strongpassword123"
+    required:
+      - "email"
+      - "full_name"
+      - "password"
+    type: "object"
+host: "localhost:8080"
+info:
+  contact:
+    name: "API Support"
+  description: "This is a Go backend template using DDD architecture."
+  title: "Go DDD API Template"
+  version: "1.0"

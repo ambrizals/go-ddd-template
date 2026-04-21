@@ -1,0 +1,64 @@
+name: Generate SDK
+
+on:
+  push:
+    paths:
+      - 'cmd/api/**/*.go'
+      - 'internal/modules/**/dto/*.go'
+      - 'VERSION'
+    branches:
+      - main
+
+jobs:
+  generate-sdk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Read version
+        run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate swagger
+        run: make swag-gen
+
+      - name: Install SDK dependencies
+        run: cd sdk && npm install
+
+      - name: Generate SDK
+        run: cd sdk && npm run convert
+
+      - name: Update package.json version
+        run: |
+          cd sdk
+          npm version $VERSION --no-git-tag-version
+
+      - name: Upload SDK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdk
+          path: sdk/
+          retention-days: 30
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: chore/update-sdk
+          title: 'chore: update SDK'
+          commit-message: 'chore: update SDK to ${{ env.VERSION }}'
+          body: |
+            SDK auto-generated from OpenAPI specification.
+
+            Version: ${{ env.VERSION }}
+          delete-branch: true

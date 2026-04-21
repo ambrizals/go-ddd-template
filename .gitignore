@@ -37,3 +37,8 @@ Thumbs.db
 /bin/
 /tmp/
 api-server
+
+# SDK generated files
+sdk/node_modules/
+sdk/src/
+sdk/dist/

@@ -2,13 +2,14 @@ package database
 
 import (
 	"fmt"
+	"log"
+
+	"github.com/ambrizals/go-ddd-template/internal/shared/config"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/user/go-ddd-template/internal/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
 )
 
 func InitDB(cfg *config.Config) (*gorm.DB, error) {
