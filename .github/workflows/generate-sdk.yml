@@ -81,6 +81,5 @@ jobs:
       - name: Publish to GitHub Packages
         run: |
           cd sdk
-          bun publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
+          bun publish --registry=https://npm.pkg.github.com
