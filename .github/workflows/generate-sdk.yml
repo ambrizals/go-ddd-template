@@ -80,7 +80,12 @@ jobs:
 
       - name: Publish to GitHub Packages
         working-directory: ./sdk
-        run: bun publish
+        run: |
+          # 1. Create the .npmrc with the scope mapping
+          echo "@ambrizals:registry=https://npm.pkg.github.com" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${BUN_AUTH_TOKEN}" >> .npmrc
+
+          # 2. Run publish
+          bun publish
         env:
-          # Bun uses this variable to authenticate against registries
           BUN_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
