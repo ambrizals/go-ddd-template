@@ -58,14 +58,12 @@ jobs:
           path: sdk/
           retention-days: 30
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
-        with:
-          branch: chore/update-sdk
-          title: 'chore: update SDK'
-          commit-message: 'chore: update SDK to ${{ env.VERSION }}'
-          body: |
-            SDK auto-generated from OpenAPI specification.
+      - name: Commit SDK changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add sdk/
+          git commit -m "chore: update SDK to ${{ env.VERSION }}" || echo "No changes to commit"
 
-            Version: ${{ env.VERSION }}
-          delete-branch: true
+      - name: Push changes
+        run: git push
