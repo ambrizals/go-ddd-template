@@ -1,29 +1,16 @@
 basePath: "/api/v1"
 definitions:
-  update_user.UpdateUserInput:
-    type: "object"
-    properties:
-      email:
-        type: "string"
-      full_name:
-        type: "string"
-      id:
-        type: "integer"
-      password:
-        minLength: 8
-        type: "string"
-    required:
-      - "id"
   dto.DeactivateUserResponseDTO:
-    type: "object"
     properties:
-      id:
-        example: 1
-        type: "integer"
       deactivated:
-        type: "boolean"
         example: true
+        type: "boolean"
+      id:
+        type: "integer"
+        example: 1
+    type: "object"
   dto.RegisterRequest:
+    type: "object"
     properties:
       email:
         example: "user@example.com"
@@ -39,7 +26,6 @@ definitions:
       - "email"
       - "full_name"
       - "password"
-    type: "object"
   dto.UserResponseDTO:
     properties:
       created_at:
@@ -53,65 +39,53 @@ definitions:
         example: 1
         type: "integer"
     type: "object"
+  update_user.UpdateUserInput:
+    properties:
+      email:
+        type: "string"
+      full_name:
+        type: "string"
+      id:
+        type: "integer"
+      password:
+        minLength: 8
+        type: "string"
+    required:
+      - "id"
+    type: "object"
 host: "localhost:8080"
 info:
+  contact:
+    name: "API Support"
   description: "This is a Go backend template using DDD architecture."
   title: "Go DDD API Template"
   version: "1.0"
-  contact:
-    name: "API Support"
 paths:
-  /users:
-    post:
-      summary: "Register a new user"
-      tags:
-        - "users"
-      consumes:
-        - "application/json"
-      description: "Create a new user account"
-      parameters:
-        -           description: "User registration details"
-          in: "body"
-          name: "request"
-          required: true
-          schema:
-            $ref: "#/definitions/dto.RegisterRequest"
-      produces:
-        - "application/json"
-      responses:
-        201:
-          description: "Created"
-          schema:
-            $ref: "#/definitions/dto.UserResponseDTO"
-        400:
-          description: "Bad Request"
-          schema:
-            $ref: "#/definitions/dto.UserResponseDTO"
   /users/{id}:
     delete:
+      tags:
+        - "users"
       description: "Deactivate user by their unique ID"
       parameters:
-        -           required: true
+        -           in: "path"
+          name: "id"
+          required: true
           type: "integer"
           description: "User ID"
-          in: "path"
-          name: "id"
       responses:
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/dto.DeactivateUserResponseDTO"
         200:
           description: "OK"
           schema:
             $ref: "#/definitions/dto.DeactivateUserResponseDTO"
         400:
-          schema:
-            $ref: "#/definitions/dto.DeactivateUserResponseDTO"
           description: "Bad Request"
-        404:
-          description: "Not Found"
           schema:
             $ref: "#/definitions/dto.DeactivateUserResponseDTO"
       summary: "Deactivate an existing user"
-      tags:
-        - "users"
     get:
       description: "Get user details by their unique ID"
       parameters:
@@ -135,6 +109,23 @@ paths:
       tags:
         - "users"
     put:
+      tags:
+        - "users"
+      consumes:
+        - "application/json"
+      description: "Update user details by their unique ID"
+      parameters:
+        -           description: "User ID"
+          in: "path"
+          name: "id"
+          required: true
+          type: "integer"
+        -           schema:
+            $ref: "#/definitions/update_user.UpdateUserInput"
+          description: "User update details"
+          in: "body"
+          name: "request"
+          required: true
       produces:
         - "application/json"
       responses:
@@ -151,21 +142,30 @@ paths:
           schema:
             $ref: "#/definitions/dto.UserResponseDTO"
       summary: "Update an existing user"
-      tags:
-        - "users"
+  /users:
+    post:
       consumes:
         - "application/json"
-      description: "Update user details by their unique ID"
+      description: "Create a new user account"
       parameters:
-        -           in: "path"
-          name: "id"
-          required: true
-          type: "integer"
-          description: "User ID"
-        -           description: "User update details"
+        -           description: "User registration details"
           in: "body"
           name: "request"
           required: true
           schema:
-            $ref: "#/definitions/update_user.UpdateUserInput"
+            $ref: "#/definitions/dto.RegisterRequest"
+      produces:
+        - "application/json"
+      responses:
+        201:
+          description: "Created"
+          schema:
+            $ref: "#/definitions/dto.UserResponseDTO"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/dto.UserResponseDTO"
+      summary: "Register a new user"
+      tags:
+        - "users"
 swagger: "2.0"
