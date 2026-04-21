@@ -9,6 +9,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   generate-sdk:
     runs-on: ubuntu-latest
