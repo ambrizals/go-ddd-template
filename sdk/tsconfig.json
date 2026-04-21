@@ -2,6 +2,8 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
+    "moduleResolution": "node", // Add this
+    "types": ["node"], // Add this
     "lib": ["ES2020"],
     "declaration": true,
     "strict": true,
@@ -10,7 +12,6 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsx": "react-jsx"
   },

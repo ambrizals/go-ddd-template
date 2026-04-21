@@ -10,7 +10,9 @@
   },
   "scripts": {
     "convert": "swagger2openapi ../docs/swagger.json -o ./temp-openapi.yaml && openapi-typescript ./temp-openapi.yaml --output ./src/api.d.ts && rm ./temp-openapi.yaml",
-    "generate": "npm run convert",
+    "generate:types": "npm run convert",
+    "generate:client": "bun ./scripts/generate-client.ts",
+    "generate": "npm run generate:types && npm run generate:client",
     "build": "tsc --noEmit"
   },
   "keywords": [
