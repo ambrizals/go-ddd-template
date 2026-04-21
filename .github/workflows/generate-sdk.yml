@@ -52,11 +52,8 @@ jobs:
       - name: Install SDK dependencies
         run: cd sdk && bun install
 
-      - name: Generate Schema
-        run: cd sdk && bun run convert
-
       - name: Generate Client
-        run: cd sdk && bun install && bun run convert
+        run: cd sdk && bun run generate
 
       - name: Update package.json version
         run: |

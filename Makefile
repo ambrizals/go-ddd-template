@@ -21,7 +21,7 @@ swag-gen:
 	go run cmd/swagger-enhancer/main.go
 
 generate-sdk:
-	cd sdk && bun install && bun run convert
+	cd sdk && bun install && bun run generate
 
 docker-up:
 	docker-compose up -d
