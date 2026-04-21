@@ -3,9 +3,9 @@ name: Generate SDK
 on:
   push:
     paths:
-      - 'cmd/api/**/*.go'
-      - 'internal/modules/**/dto/*.go'
-      - 'VERSION'
+      - "cmd/api/**/*.go"
+      - "internal/modules/**/dto/*.go"
+      - "VERSION"
     branches:
       - main
 
@@ -31,7 +31,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.23'
+          go-version: "1.23"
 
       - name: Install swag
         run: go install github.com/swaggo/swag/cmd/swag@latest
@@ -39,7 +39,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: "24"
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
@@ -79,7 +79,8 @@ jobs:
         run: git push
 
       - name: Publish to GitHub Packages
-        run: |
-          cd sdk
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
-          bun publish --registry=https://npm.pkg.github.com
+        working-directory: ./sdk
+        run: bun publish
+        env:
+          # Bun uses this variable to authenticate against registries
+          BUN_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
